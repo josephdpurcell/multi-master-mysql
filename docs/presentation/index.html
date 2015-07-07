@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Multi-Master Replication Using Auto Increment</title>
+
+		<meta name="description" content="An example of multi-master MySQL using auto increment increment and auto increment offset.">
+		<meta name="author" content="Joseph D. Purcell">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="palantirnet-theme/assets/css/styles.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+    <!-- Change body class to "dark" if you prefer a dark theme, or "light" if you'd rather have a light theme-->
+    <body class="white">
+    <div class="reveal">
+        <div class="logo">
+            <p>Palantir.net</p>
+        </div>
+			<div class="slides">
+				<section>
+                    <section class="title">
+                        <h1>Multi-Master Replication Using Auto Increment</h1>
+                        <h3>MySQL Meetup - July 7, 2015</h3>
+                        <h3>Joseph D. Purcell</h3>
+
+                        <aside class="notes">
+                        </aside>
+                    </section>
+
+                    <section>
+                        <h1>Who am I?</h1>
+
+                        <aside class="notes">
+                            <ul>
+                                <li>web dev since 2003</li>
+                                <li>inspiration: cross-disc resrch</li>
+                                <li>enjoy adventure</li>
+                            </ul>
+                        </aside>
+                    </section>
+
+                    <section>
+                        <h1>Who are you?</h1>
+
+                        <aside class="notes">
+                            <ul>
+                                <li>People who already know this</li>
+                                <li>But, have discarded the idea</li>
+                                <li>So, let's revisit possibilities</li>
+                            </ul>
+                        </aside>
+                    </section>
+                </section>
+
+				<section>
+                    <section class="title">
+                        <h1>Configuration on node1</h1>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+
+                    <section class="title">
+                        <pre><code data-trim contenteditable style="font-size:2em;line-height:2em;">
+[mysqld]
+log-bin = mysql-bin
+server-id = 1
+bind-address = 10.0.0.101
+                        </code></pre>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+
+                    <section class="title">
+                        <pre><code data-trim contenteditable style="font-size:2em;line-height:2em;">
+mysql&gt; GRANT REPLICATION SLAVE ON *.* TO 'replicator'@'%'
+          IDENTIFIED BY 'pass';
+mysql&gt; FLUSH PRIVILEGES;
+mysql&gt; CREATE DATABASE twitter;
+                        </code></pre>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+
+                    <section class="title">
+                        <pre><code data-trim contenteditable style="font-size:2em;line-height:2em;">
+mysql&gt; CHANGE MASTER TO MASTER_HOST='10.0.0.102',
+          MASTER_USER='replicator',
+          MASTER_PASSWORD='pass';
+mysql&gt; START SLAVE;
+                        </code></pre>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+                </section>
+
+				<section>
+                    <section class="title">
+                        <h1>Configuration on node2</h1>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+
+                    <section class="title">
+                        <pre><code data-trim contenteditable style="font-size:2em;line-height:2em;">
+[mysqld]
+log-bin = mysql-bin
+server-id = 2
+bind-address = 10.0.0.102
+                        </code></pre>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+
+                    <section class="title">
+                        <p>Same as node1:</p>
+                        <pre><code data-trim contenteditable style="font-size:2em;line-height:2em;">
+mysql&gt; GRANT REPLICATION SLAVE ON *.* TO 'replicator'@'%'
+          IDENTIFIED BY 'pass';
+mysql&gt; FLUSH PRIVILEGES;
+mysql&gt; CREATE DATABASE twitter;
+                        </code></pre>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+
+                    <section class="title">
+                        <pre><code data-trim contenteditable style="font-size:2em;line-height:2em;">
+mysql&gt; CHANGE MASTER TO MASTER_HOST='10.0.0.101',
+          MASTER_USER='replicator',
+          MASTER_PASSWORD='pass';
+mysql&gt; START SLAVE;
+                        </code></pre>
+                    </section>
+                </section>
+
+				<section>
+                    <section class="title">
+                        <h1>Create Schema and Data</h1>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+
+                    <section class="title">
+                        <pre><code data-trim contenteditable style="font-size:2em;line-height:2em;">
+mysql&gt; CREATE TABLE twitter.users (
+    id INTEGER(255) UNSIGNED AUTO_INCREMENT,
+    name varchar(255),
+    email varchar(255),
+    created_at TIMESTAMP DEFAULT '0000-00-00 00:00:00',
+    modified_at TIMESTAMP DEFAULT NOW() ON UPDATE NOW(),
+    UNIQUE KEY (email),
+    PRIMARY KEY (id)
+);
+                        </code></pre>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+
+                    <section class="title">
+                        <pre><code data-trim contenteditable style="font-size:2em;line-height:2em;">
+mysql&gt; INSERT INTO `twitter`.`users`
+    (`created_at`, `name`, `email`)
+    VALUES
+    (null, 'Joe', 'joe@example.com');
+                        </code></pre>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+
+                    <section class="title">
+                        <pre><code data-trim contenteditable style="font-size:2em;line-height:2em;">
++----+------+-----------------+---------------------+---------------------+
+| id | name | email           | created_at          | modified_at         |
++----+------+-----------------+---------------------+---------------------+
+|  1 | Joe  | joe@example.com | 2015-07-07 13:41:44 | 2015-07-07 13:41:44 |
++----+------+-----------------+---------------------+---------------------+
+                        </code></pre>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+
+                    <section class="title">
+                        <pre><code data-trim contenteditable style="font-size:2em;line-height:2em;">
+mysql&gt; INSERT INTO `twitter`.`users`
+    (`created_at`, `name`, `email`)
+    VALUES
+    (null, 'Bob', 'bob@example.com');
+                        </code></pre>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+
+                    <section class="title">
+                        <pre><code data-trim contenteditable style="font-size:2em;line-height:2em;">
++----+------+-----------------+---------------------+---------------------+
+| id | name | email           | created_at          | modified_at         |
++----+------+-----------------+---------------------+---------------------+
+|  1 | Joe  | joe@example.com | 2015-07-07 13:41:44 | 2015-07-07 13:41:44 |
+|  3 | Bob  | bob@example.com | 2015-07-07 13:41:49 | 2015-07-07 13:41:49 |
++----+------+-----------------+---------------------+---------------------+
+                        </code></pre>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+                </section>
+
+				<section>
+                    <section class="title">
+                        <h1>What data profiles<br>does this work with?</h1>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+
+                    <section class="title">
+                        <img src="assets/solitary-social_vs_unique-non-unique.png" width="100%">
+                        <aside class="notes">
+                        </aside>
+                    </section>
+
+                    <section class="title">
+                        <h1>Solitary + Unique Indexes</h1>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+
+                    <section class="title">
+                        <h2>Problem 1: Stale Data</h2>
+                        <ul>
+                            <li>IF: Read frequency is faster than replication latency.</li>
+                            <li>THEN: The user will see stale data.
+                            <li>EXAMPLE: Update background color of your user profile.
+                                <ul>
+                                    <li>T1: <code>UPDATE user_profiles SET profile_bg_color='#FF0000' WHERE user_id=1</code></li>
+                                    <li>T2: <code>SELECT * FROM user_profiles WHERE user_id=1</code></li>
+                                    <li>T3: replication completes</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+
+                    <section class="title">
+                        <h2>Solutions to Problem 1</h2>
+                        <ol>
+                            <li>Use session fixation and last updated checks.</li>
+                        </ol>
+                        <aside class="notes">
+                            <li>e.g. logged in on offline mobile device and on laptop</li>
+                        </aside>
+                    </section>
+
+                    <section class="title">
+                        <h2>Problem 2: Duplicate Keys</h2>
+                        <ul>
+                            <li>IF: You have a unique index other than an auto increment</li>
+                            <li>AND: Write frequency is faster than replication latency.</li>
+                            <li>THEN: Then duplicate key errors will trigger.
+                            <li>EXAMPLE: Two people update their email at the same time.
+                                <ul>
+                                    <li>T1: on node1: <code>UPDATE users SET email='joe@example.com' WHERE id=1</code></li>
+                                    <li>T1: on node2: <code>UPDATE users SET email='joe@example.com' WHERE id=1</code></li>
+                                    <li>T2: node1 receives the update from node2 and triggers dup error.</li>
+                                    <li>T2: node2 receives the update from node1 and triggers dup error.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+
+                    <section class="title">
+                        <h2>Solutions to Problem 2</h2>
+                        <ol>
+                            <li>This should never happen.</li>
+                            <li>It's solitary data: make sure only one person is editing at a time.</li>
+                            <li>Use a write-back cache and do lookups to enforce uniqueness in the application layer.</li>
+                            <li>Database admins ftw! (Also, expensive licenses.)</li>
+                        </ol>
+                    </section>
+
+                    <section class="title">
+                        <h1>Solitary + No Unique Indexes</h1>
+                        <p>This doesn't exist.</p>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+
+                    <section class="title">
+                        <h1>Social + Unique Indexes</h1>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+
+                    <section class="title">
+                        <h2>Problem 1: Stale Data</h2>
+                        <ul>
+                            <li>IF: Read frequency is faster than replication latency.</li>
+                            <li>THEN: The user will see stale data.</li>
+                            <li>EXAMPLE: When will this happen?</li>
+                        </ul>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+
+                    <section class="title">
+                        <h2>Problem 2: Duplicate Keys</h2>
+                        <ul>
+                            <li>IF: You have a unique index other than an auto increment</li>
+                            <li>AND: Write frequency is faster than replication latency.</li>
+                            <li>THEN: Then duplicate key errors will trigger.
+                            <li>EXAMPLE: Two people upload a spreadsheet of locations.
+                                <ul>
+                                    <li>T1: on node1: <code>INSERT INTO places (business_id, name) VALUES (1, 'Arbys on Michigan');</code></li>
+                                    <li>T1: on node2: <code>INSERT INTO places (business_id, name) VALUES (1, 'Arbys on Michigan');</code></li>
+                                    <li>T2: node1 receives the Michigan loc from node2 and triggers dup error.</li>
+                                    <li>T2: node2 receives the Michigan loc from node1 and triggers dup error.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+
+                    <section class="title">
+                        <h2>Solutions to Problem 2</h2>
+                        <ol>
+                            <li>Assume the data is write-only, e.g. FitBit data points.</li>
+                            <li>Make sure only one person is editing at a time.</li>
+                            <li>Use a write-back cache and do lookups to enforce uniqueness in the application layer.</li>
+                            <li>Database admins ftw! (Also, expensive licenses.)</li>
+                        </ol>
+                    </section>
+
+                    <section class="title">
+                        <h1>Social + No Unique Indexes</h1>
+                        <p>There are no replication problems.</p>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+
+                </section>
+
+				<section>
+                    <h1>Thank You!</h1>
+                </section>
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
