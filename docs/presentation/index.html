@@ -52,6 +52,7 @@
 
                     <section>
                         <h1>Who am I?</h1>
+                        <p>A software engineer.</p>
 
                         <aside class="notes">
                             <ul>
@@ -64,7 +65,7 @@
 
                     <section>
                         <h1>Who are you?</h1>
-
+                        <p>Database engineers who work with software engineers.</p>
                         <aside class="notes">
                             <ul>
                                 <li>People who already know this</li>
@@ -73,27 +74,61 @@
                             </ul>
                         </aside>
                     </section>
+
+                    <section>
+                        <blockquote>
+                        It is not enough to do your best;<br>
+                        you must know what to do,<br>
+                        and then do your best.<br>
+                        <div style="text-align:right">W. Edwards Deming</div>
+                        </blockquote>
+                        <aside class="notes">
+                            <ul>
+                                <li>Why is this interesting to me?</li>
+                                <li>To be a good engineer means you know how to handle data well</li>
+                            </ul>
+                        </aside>
+                    </section>
                 </section>
 
 				<section>
                     <section class="title">
+                        <h1>What is the basic configuration?</h1>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+
+                    <section>
+                        <img src="assets/multi-master-mysql-using-auto-increment.png">
+                        <aside class="notes">
+                            <ul>
+                                <li>a simple 2-node scenario</li>
+                                <li>the problem space I want to explore is complete here</li>
+                            </ul>
+                        </aside>
+                    </section>
+
+                    <section>
                         <h1>Configuration on node1</h1>
                         <aside class="notes">
                         </aside>
                     </section>
 
-                    <section class="title">
+                    <section>
                         <pre><code data-trim contenteditable style="font-size:2em;line-height:2em;">
 [mysqld]
 log-bin = mysql-bin
 server-id = 1
 bind-address = 10.0.0.101
+auto_increment_increment = 2
+auto_increment_offset = 1
                         </code></pre>
                         <aside class="notes">
                         </aside>
                     </section>
 
-                    <section class="title">
+<!--
+                    <section>
                         <pre><code data-trim contenteditable style="font-size:2em;line-height:2em;">
 mysql&gt; GRANT REPLICATION SLAVE ON *.* TO 'replicator'@'%'
           IDENTIFIED BY 'pass';
@@ -104,7 +139,7 @@ mysql&gt; CREATE DATABASE twitter;
                         </aside>
                     </section>
 
-                    <section class="title">
+                    <section>
                         <pre><code data-trim contenteditable style="font-size:2em;line-height:2em;">
 mysql&gt; CHANGE MASTER TO MASTER_HOST='10.0.0.102',
           MASTER_USER='replicator',
@@ -114,27 +149,33 @@ mysql&gt; START SLAVE;
                         <aside class="notes">
                         </aside>
                     </section>
-                </section>
+-->
 
-				<section>
-                    <section class="title">
+                    <section>
                         <h1>Configuration on node2</h1>
                         <aside class="notes">
                         </aside>
                     </section>
 
-                    <section class="title">
+                    <section>
                         <pre><code data-trim contenteditable style="font-size:2em;line-height:2em;">
 [mysqld]
 log-bin = mysql-bin
 server-id = 2
 bind-address = 10.0.0.102
+auto_increment_increment = 2
+auto_increment_offset = 2
                         </code></pre>
                         <aside class="notes">
+                            <ul>
+                                <li>offset = node number</li>
+                                <li>increment = number of nodes</li>
+                            </ul>
                         </aside>
                     </section>
 
-                    <section class="title">
+<!--
+                    <section>
                         <p>Same as node1:</p>
                         <pre><code data-trim contenteditable style="font-size:2em;line-height:2em;">
 mysql&gt; GRANT REPLICATION SLAVE ON *.* TO 'replicator'@'%'
@@ -146,7 +187,7 @@ mysql&gt; CREATE DATABASE twitter;
                         </aside>
                     </section>
 
-                    <section class="title">
+                    <section>
                         <pre><code data-trim contenteditable style="font-size:2em;line-height:2em;">
 mysql&gt; CHANGE MASTER TO MASTER_HOST='10.0.0.101',
           MASTER_USER='replicator',
@@ -154,16 +195,25 @@ mysql&gt; CHANGE MASTER TO MASTER_HOST='10.0.0.101',
 mysql&gt; START SLAVE;
                         </code></pre>
                     </section>
+-->
+
                 </section>
 
 				<section>
                     <section class="title">
+                        <h1>Now, how does this work?</h1>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+
+<!--
+                    <section>
                         <h1>Create Schema and Data</h1>
                         <aside class="notes">
                         </aside>
                     </section>
 
-                    <section class="title">
+                    <section>
                         <pre><code data-trim contenteditable style="font-size:2em;line-height:2em;">
 mysql&gt; CREATE TABLE twitter.users (
     id INTEGER(255) UNSIGNED AUTO_INCREMENT,
@@ -179,7 +229,7 @@ mysql&gt; CREATE TABLE twitter.users (
                         </aside>
                     </section>
 
-                    <section class="title">
+                    <section>
                         <pre><code data-trim contenteditable style="font-size:2em;line-height:2em;">
 mysql&gt; INSERT INTO `twitter`.`users`
     (`created_at`, `name`, `email`)
@@ -189,20 +239,25 @@ mysql&gt; INSERT INTO `twitter`.`users`
                         <aside class="notes">
                         </aside>
                     </section>
+-->
 
-                    <section class="title">
+                    <section>
                         <pre><code data-trim contenteditable style="font-size:2em;line-height:2em;">
-+----+------+-----------------+---------------------+---------------------+
-| id | name | email           | created_at          | modified_at         |
-+----+------+-----------------+---------------------+---------------------+
-|  1 | Joe  | joe@example.com | 2015-07-07 13:41:44 | 2015-07-07 13:41:44 |
-+----+------+-----------------+---------------------+---------------------+
++----+------+-----------------+---------------------+
+| id | name | email           | created_at          |
++----+------+-----------------+---------------------+
+|  1 | Joe  | joe@example.com | 2015-07-07 13:41:44 |
++----+------+-----------------+---------------------+
                         </code></pre>
                         <aside class="notes">
+                            <ul>
+                                <li>We know this write was on node1</li>
+                            </ul>
                         </aside>
                     </section>
 
-                    <section class="title">
+<!--
+                    <section>
                         <pre><code data-trim contenteditable style="font-size:2em;line-height:2em;">
 mysql&gt; INSERT INTO `twitter`.`users`
     (`created_at`, `name`, `email`)
@@ -212,17 +267,21 @@ mysql&gt; INSERT INTO `twitter`.`users`
                         <aside class="notes">
                         </aside>
                     </section>
+-->
 
-                    <section class="title">
+                    <section>
                         <pre><code data-trim contenteditable style="font-size:2em;line-height:2em;">
-+----+------+-----------------+---------------------+---------------------+
-| id | name | email           | created_at          | modified_at         |
-+----+------+-----------------+---------------------+---------------------+
-|  1 | Joe  | joe@example.com | 2015-07-07 13:41:44 | 2015-07-07 13:41:44 |
-|  3 | Bob  | bob@example.com | 2015-07-07 13:41:49 | 2015-07-07 13:41:49 |
-+----+------+-----------------+---------------------+---------------------+
++----+------+-----------------+---------------------+
+| id | name | email           | created_at          |
++----+------+-----------------+---------------------+
+|  1 | Joe  | joe@example.com | 2015-07-07 13:41:44 |
+|  3 | Bob  | bob@example.com | 2015-07-07 13:41:49 |
++----+------+-----------------+---------------------+
                         </code></pre>
                         <aside class="notes">
+                            <ul>
+                                <li>We know this write was on node1</li>
+                            </ul>
                         </aside>
                     </section>
                 </section>
@@ -234,28 +293,47 @@ mysql&gt; INSERT INTO `twitter`.`users`
                         </aside>
                     </section>
 
-                    <section class="title">
+                    <section>
+                        <h2>Two common problems:</h2>
+                        <ol>
+                            <li>Stale data. (read frequency &gt; repl. latency)</li>
+                            <li>Duplicate data. (write frequency &gt; repl. latency)</li>
+                        </ol>
+                        <aside class="notes">
+                            <ul>
+                                <li>Write a tweet to node1 and read from node2</li>
+                                <li>Write a username to node1 and node2 simultaneously</li>
+                                <li>Let's frame the conversation in scenarios</li>
+                            </ul>
+                        </aside>
+                    </section>
+
+                    <section>
                         <img src="assets/solitary-social_vs_unique-non-unique.png" width="100%">
                         <aside class="notes">
+                            <ol>
+                                <li>unique compared to other data</li>
+                                <li>written to by just one person or multiple</li>
+                            </ol>
                         </aside>
                     </section>
 
-                    <section class="title">
-                        <h1>Solitary + Unique Indexes</h1>
+                    <section>
+                        <h2>Solitary + Unique</h2>
                         <aside class="notes">
                         </aside>
                     </section>
 
-                    <section class="title">
-                        <h2>Problem 1: Stale Data</h2>
+                    <section>
+                        <h3>Problem 1: Stale Data</h3>
                         <ul>
                             <li>IF: Read frequency is faster than replication latency.</li>
                             <li>THEN: The user will see stale data.
-                            <li>EXAMPLE: Update background color of your user profile.
+                            <li>EXAMPLE: Add a student to my class on node1 and read list from node2.
                                 <ul>
-                                    <li>T1: <code>UPDATE user_profiles SET profile_bg_color='#FF0000' WHERE user_id=1</code></li>
-                                    <li>T2: <code>SELECT * FROM user_profiles WHERE user_id=1</code></li>
-                                    <li>T3: replication completes</li>
+                                    <li>T1: on node1: <code>INSERT INTO students...</code></li>
+                                    <li>T2: on node2: <code>SELECT * FROM students WHERE...</code></li>
+                                    <li>T3: replication from node1 to node2 completes</li>
                                 </ul>
                             </li>
                         </ul>
@@ -263,26 +341,25 @@ mysql&gt; INSERT INTO `twitter`.`users`
                         </aside>
                     </section>
 
-                    <section class="title">
-                        <h2>Solutions to Problem 1</h2>
+                    <section>
+                        <h3>Solutions to Problem 1</h3>
                         <ol>
-                            <li>Use session fixation and last updated checks.</li>
+                            <li>Use session fixation.</li>
                         </ol>
                         <aside class="notes">
-                            <li>e.g. logged in on offline mobile device and on laptop</li>
                         </aside>
                     </section>
 
-                    <section class="title">
-                        <h2>Problem 2: Duplicate Keys</h2>
+                    <section>
+                        <h3>Problem 2: Duplicate Data</h3>
                         <ul>
-                            <li>IF: You have a unique index other than an auto increment</li>
+                            <li>IF: You have a unique index other than an auto increment, e.g. username.</li>
                             <li>AND: Write frequency is faster than replication latency.</li>
                             <li>THEN: Then duplicate key errors will trigger.
-                            <li>EXAMPLE: Two people update their email at the same time.
+                            <li>EXAMPLE: Two people update their username to 'joe' simultaneously.
                                 <ul>
-                                    <li>T1: on node1: <code>UPDATE users SET email='joe@example.com' WHERE id=1</code></li>
-                                    <li>T1: on node2: <code>UPDATE users SET email='joe@example.com' WHERE id=1</code></li>
+                                    <li>T1: on node1: <code>UPDATE users SET username='joe' WHERE id=1</code></li>
+                                    <li>T1: on node2: <code>UPDATE users SET username='joe' WHERE id=2</code></li>
                                     <li>T2: node1 receives the update from node2 and triggers dup error.</li>
                                     <li>T2: node2 receives the update from node1 and triggers dup error.</li>
                                 </ul>
@@ -292,52 +369,33 @@ mysql&gt; INSERT INTO `twitter`.`users`
                         </aside>
                     </section>
 
-                    <section class="title">
-                        <h2>Solutions to Problem 2</h2>
+                    <section>
+                        <h3>Solutions to Problem 2</h3>
                         <ol>
-                            <li>This should never happen.</li>
-                            <li>It's solitary data: make sure only one person is editing at a time.</li>
+                            <li>Make reservations, e.g. a "lock" with an expiry.</li>
+                            <li>Change the assumptions: allow duplicate usernames.</li>
                             <li>Use a write-back cache and do lookups to enforce uniqueness in the application layer.</li>
-                            <li>Database admins ftw! (Also, expensive licenses.)</li>
+                            <li>Database engineers ftw! (Also, expensive licenses.)</li>
                         </ol>
                     </section>
 
-                    <section class="title">
-                        <h1>Solitary + No Unique Indexes</h1>
-                        <p>This doesn't exist.</p>
+                    <section>
+                        <h2>Solitary + Non-Unique</h2>
                         <aside class="notes">
                         </aside>
                     </section>
 
-                    <section class="title">
-                        <h1>Social + Unique Indexes</h1>
-                        <aside class="notes">
-                        </aside>
-                    </section>
-
-                    <section class="title">
-                        <h2>Problem 1: Stale Data</h2>
+                    <section>
+                        <h3>Problem 1: Stale Data</h3>
                         <ul>
-                            <li>IF: Read frequency is faster than replication latency.</li>
-                            <li>THEN: The user will see stale data.</li>
-                            <li>EXAMPLE: When will this happen?</li>
-                        </ul>
-                        <aside class="notes">
-                        </aside>
-                    </section>
-
-                    <section class="title">
-                        <h2>Problem 2: Duplicate Keys</h2>
-                        <ul>
-                            <li>IF: You have a unique index other than an auto increment</li>
-                            <li>AND: Write frequency is faster than replication latency.</li>
-                            <li>THEN: Then duplicate key errors will trigger.
-                            <li>EXAMPLE: Two people upload a spreadsheet of locations.
+                            <li>IF: You have no unique index other than an auto id, e.g. a tweet.</li>
+                            <li>AND: Read frequency is faster than replication latency.</li>
+                            <li>THEN: Then you will get stale data.
+                            <li>EXAMPLE: You post a tweet to node1 and read from node2.
                                 <ul>
-                                    <li>T1: on node1: <code>INSERT INTO places (business_id, name) VALUES (1, 'Arbys on Michigan');</code></li>
-                                    <li>T1: on node2: <code>INSERT INTO places (business_id, name) VALUES (1, 'Arbys on Michigan');</code></li>
-                                    <li>T2: node1 receives the Michigan loc from node2 and triggers dup error.</li>
-                                    <li>T2: node2 receives the Michigan loc from node1 and triggers dup error.</li>
+                                    <li>T1: on node1: <code>INSERT INTO tweets...</code></li>
+                                    <li>T2: on node2: <code>SELECT * FROM tweets WHERE...</code></li>
+                                    <li>T3: replication from node1 to node2 completes</li>
                                 </ul>
                             </li>
                         </ul>
@@ -345,23 +403,108 @@ mysql&gt; INSERT INTO `twitter`.`users`
                         </aside>
                     </section>
 
-                    <section class="title">
-                        <h2>Solutions to Problem 2</h2>
+                    <section>
+                        <h3>Solutions to Problem 1</h3>
                         <ol>
-                            <li>Assume the data is write-only, e.g. FitBit data points.</li>
-                            <li>Make sure only one person is editing at a time.</li>
-                            <li>Use a write-back cache and do lookups to enforce uniqueness in the application layer.</li>
-                            <li>Database admins ftw! (Also, expensive licenses.)</li>
+                            <li>Use session fixation.</li>
                         </ol>
                     </section>
 
-                    <section class="title">
-                        <h1>Social + No Unique Indexes</h1>
-                        <p>There are no replication problems.</p>
+                    <section>
+                        <h3>Problem 2: Duplicate Data</h3>
+                        <ul>
+                            <li>IF: You have no unique index other than an auto id, e.g. a tweet.</li>
+                            <li>AND: Write frequency is faster than replication latency.</li>
+                            <li>THEN: Then no duplication errors will trigger.</li>
+                        </ul>
                         <aside class="notes">
                         </aside>
                     </section>
 
+                    <section>
+                        <h2>Social + Unique</h2>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+
+                    <section>
+                        <h3>Problem 1: Stale Data</h3>
+                        <ul>
+                            <li>IF: Read frequency is faster than replication latency.</li>
+                            <li>THEN: The user will see stale data.
+                            <li>EXAMPLE: Create a blog post with slug 'mysql' on node1.
+                                <ul>
+                                    <li>T1: on node1: <code>INSERT INTO posts...</code></li>
+                                    <li>T2: on node2: <code>SELECT * FROM posts WHERE...</code></li>
+                                    <li>T3: replication from node1 to node2 completes</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+
+                    <section>
+                        <h3>Solutions to Problem 1</h3>
+                        <ol>
+                            <li>Change assumptions: stale data is ok.</li>
+                            <li>Check last udpated timestamps and cache newest.</li>
+                            <li>Use session fixation? (if "social" group is small)</li>
+                            <li>Use a write-back cache to increase availability.</li>
+                        </ol>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+
+                    <section>
+                        <h3>Problem 2: Duplicate Data</h3>
+                        <ul>
+                            <li>IF: You have a unique index other than an auto increment, e.g. blog postslug.</li>
+                            <li>AND: Write frequency is faster than replication latency.</li>
+                            <li>THEN: Then duplicate key errors will trigger.
+                            <li>EXAMPLE: Two people create a blog post with slug 'mysql' simultaneously.
+                                <ul>
+                                    <li>T1: on node1: <code>INSERT INTO posts...</code></li>
+                                    <li>T1: on node2: <code>INSERT INTO posts...</code></li>
+                                    <li>T2: node1 receives the update from node2 and triggers dup error.</li>
+                                    <li>T2: node2 receives the update from node1 and triggers dup error.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+
+                    <section>
+                        <h3>Solutions to Problem 2</h3>
+                        <ol>
+                            <li>Make reservations, e.g. a "lock" with an expiry.</li>
+                            <li>Change the assumptions: allow duplicate slugs as a collection.</li>
+                            <li>Use a write-back cache and do lookups to enforce uniqueness in the application layer.</li>
+                            <li>Database engineers ftw! (Also, expensive licenses.)</li>
+                        </ol>
+                    </section>
+
+                    <section>
+                        <h2>Summary of scenarios that work:</h2>
+                        <ol>
+                            <li>Any non-unique data where repl. latency is tolerable (e.g. tweet).</li>
+                            <li>Any unique data where risk of write freq. being greater than repl. latency is tolerable (e.g. blog post slug).</li>
+                            <li>Non-unique solitary data with session fixation (e.g. blog post comment).</li>
+                            <li>Non-unique social data where session fixation of the "social" group is still performant (e.g. IRC room topic).</li>
+                            <li>Any unique data with a write-back cache and uniqueness validation in the app layer (PCIe drives, anyone?).</li>
+                            <li>Any unique data with a reservation/lookup and uniqueness validation in the app layer (PCIe drives, anyone?).</li>
+                        </ol>
+                    </section>
+
+                    <section>
+                        <h2>Thoughts to Consider</h2>
+                        <ul>
+                            <li>How does the profile of your data change the risks involved in the solution?</li>
+                            <li>Is multi-master MySQL w/auto inc is within your risk tolerance?</li>
+                            <li>Would MongoDB be a fit where multi-master MySQL w/auto inc isn't within your risk tolerance?</li>
+                        </ul>
+                    </section>
                 </section>
 
 				<section>
