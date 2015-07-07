@@ -4,6 +4,9 @@ This demonstrates setting up multi-master MySQL using auto increment offset and 
 
 ## Gettings Started
 
+```
+vagrant up
+```
 
 ## How conflicts are resolved?
 
@@ -41,3 +44,4 @@ You will now see that both nodes have "Duplicate Guy" with different IDs. Runnin
 * Demonstrate how to handle high latency in replication.
 * How to automatically copy schema to new node.
 * How to update a node that is missing a record?
+* Use ansible to allow switching from a 2-node to a 3-node and back.
