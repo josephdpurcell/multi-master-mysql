@@ -9,6 +9,9 @@ Vagrant.configure("2") do |config|
 
   # Get what setup we are going to use.
   booting = (["up", "reload", "provisioning"]).include?(ARGV[0])
+  # currently, only 2 nodes are supported
+  nodes = 2
+=begin
   if booting
     answer = ""
     while (answer != "2" && answer != "3") do
@@ -17,6 +20,7 @@ Vagrant.configure("2") do |config|
     end
     nodes = answer
   end
+=end
 
   # Provisioning all
   config.vm.provision :shell, path: "provisioning/bootstrap-all.sh"
