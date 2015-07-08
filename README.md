@@ -45,3 +45,9 @@ You will now see that both nodes have "Duplicate Guy" with different IDs. Runnin
 * How to automatically copy schema to new node.
 * How to update a node that is missing a record?
 * Use ansible to allow switching from a 2-node to a 3-node and back.
+
+## Links
+
+http://dba.stackexchange.com/questions/56128/master-master-replication-duplicate-entry
+http://forums.mysql.com/read.php?144,367933,368532
+http://stackoverflow.com/questions/614795/simulate-delayed-and-dropped-packets-on-linux
