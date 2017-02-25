@@ -1,16 +1,26 @@
 # Multi-Master MySQL
 
+## Presentations
+
+[Presentation Index](//josephdpurcell.github.io/multi-master-mysql/presentations)
+
+## Credits
+
+Built using [reveal.js](https://github.com/hakimel/reveal.js).
+
+## Setup
+
 This demonstrates setting up multi-master MySQL using auto increment offset and auto increment increment configs.
 
-## Gettings Started
+### Gettings Started
 
 ```
 vagrant up
 ```
 
-## How conflicts are resolved?
+### How conflicts are resolved?
 
-### Left untouched
+#### Left untouched
 
 1. Make a unique key on node1:
 
@@ -38,7 +48,7 @@ INSERT INTO `twitter`.`users` (`active_at`, `created_at`, `name`) VALUES (null, 
 You will now see that both nodes have "Duplicate Guy" with different IDs. Running `SHOW SLAVE STATUS\G` on node1 will show an `Error 'Duplicate entry 'Duplicate Guy'`.
 
 
-## TODOs
+### TODOs
 
 * Figure out how to handle adding nodes to existing cluster.
 * Demonstrate how to handle high latency in replication.
