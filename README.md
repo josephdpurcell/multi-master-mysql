@@ -48,6 +48,9 @@ You will now see that both nodes have "Duplicate Guy" with different IDs. Runnin
 
 ## Links
 
-http://dba.stackexchange.com/questions/56128/master-master-replication-duplicate-entry
-http://forums.mysql.com/read.php?144,367933,368532
-http://stackoverflow.com/questions/614795/simulate-delayed-and-dropped-packets-on-linux
+* http://dba.stackexchange.com/questions/56128/master-master-replication-duplicate-entry
+* http://forums.mysql.com/read.php?144,367933,368532
+* http://stackoverflow.com/questions/614795/simulate-delayed-and-dropped-packets-on-linux
+* [Byzantine Generals Problem - Leslie Lamport, Robert Shostak, and Marshall Pease (PDF)](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/12/The-Byzantine-Generals-Problem.pdf)
+* [Understanding Consensus - Tyler Treat](http://bravenewgeek.com/understanding-consensus/)
+* [Turning the DB Inside Out with Samza](https://www.confluent.io/blog/turning-the-database-inside-out-with-apache-samza/)

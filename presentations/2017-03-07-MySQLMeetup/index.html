@@ -24,6 +24,15 @@
 .reveal h1 {
   font-size: 2.5em;
 }
+.flex-container {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+}
+.flex-container > div {
+  flex-grow: 2;
+  flex: 2 50%;
+}
 </style>
   </head>
   <body>
@@ -49,6 +58,101 @@
                 <small>March 7, 2017</small>
               </div>
             </div>
+          </section>
+
+          <section>
+            <h2>The Question</h2>
+            <p>Why are some applications<br>
+            costly to manage and hard to scale?</p>
+          </section>
+
+          <section>
+            <h2>The Observation</h2>
+            <ol>
+              <li class="fragment">Developers code data structures without consulting DB admins.</li>
+              <li class="fragment">When the data doesn't scale, DB admins have to solve it without modifying code.</li>
+              <li class="fragment">DB admins don't code, so they solve in on the DB side.</li>
+              <li class="fragment">Result:
+                <ol>
+                  <li class="fragment">Architectural integrity decreases.</li>
+                  <li class="fragment">Overall complexity increases.</li>
+                  <li class="fragment">No real improvements are made while costs increase.</li>
+                </ol>
+            </ol>
+          </section>
+
+          <section>
+            <h2>The Hypothesis</h2>
+            <p>A mental model for scalable data structures<br>
+            that can be understood by both developers and DB admins<br>
+            will reduce costs and increase scalability.</p>
+          </section>
+
+          <section>
+            <h3>The Experiment</h3>
+            <p>Build a mental model that allows developers to evaluate the scalability of data structures.</p>
+            <div class="fragment">
+              <p style="text-align:left"><b>Guidelines:</b></p>
+              <ol>
+                <li>Must be understandable by both developers and DB admins.</li>
+                <li>Must not be database specific, e.g. MySQL vs MongoDB.</li>
+                <li>Must not be problem specific, e.g. locking, split-brain, stale reads.</li>
+              </ol>
+            </div>
+          </section>
+
+          <section>
+            <h3>Definitions</h3>
+            <div style="text-align:left">
+              <dt>User</dt>
+                <dd>An entity that can own data, human or machine</dd>
+              <dt>Data</dt>
+                <dd>A record in a DB or object in an app, single value or set of values</dd>
+              <dt>Data Structure</dt>
+                <dd>The structural qualities of a data, e.g. type, ownership, access</dd>
+            </div>
+          </section>
+
+          <section>
+            <h3>Data Structure Qualities</h3>
+            <div style="text-align:left">
+              <ol>
+                <li class="fragment"><b>Ownership</b>
+										<div style="padding-left:2em">
+                      <dt>Solitary</dt>
+                        <dd>Writable by a single user</dd>
+                      <dt>Sociable</dt>
+                        <dd>Writable by one or more users</dd>
+                    </div>
+                </li>
+                <li class="fragment"><b>Uniqueness</b>
+										<div style="padding-left:2em">
+                      <dt>Unique</dt>
+                        <dd>No two datas can have the same value in the data set</dd>
+                      <dt>Non-Unique</dt>
+                        <dd>Two or more datas can have the same value in the data set</dd>
+                    </div>
+                </li>
+              </ol>
+            </div>
+          </section>
+
+          <section>
+            <h3>Examples</h3>
+            <div style="text-align:left">
+              <dt>Solitary and Unique</dt>
+                <dd>IRC username</dd>
+              <dt>Solitary and Non-Unique</dt>
+                <dd>IRC message</dd>
+              <dt>Sociable and Unique</dt>
+                <dd>IRC room name</dd>
+              <dt>Sociable and Non-Unique</dt>
+                <dd>IRC room topic</dd>
+            </div>
+          </section>
+
+          <section>
+              <img src="img/solitary-social_vs_unique-non-unique.png" width="100%" style="background-color:#fff">
           </section>
 
         </section>
