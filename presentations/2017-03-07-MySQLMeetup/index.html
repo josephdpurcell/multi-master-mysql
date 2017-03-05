@@ -60,6 +60,9 @@
             </div>
           </section>
 
+        </section>
+        <section>
+
           <section>
             <h2>The Question</h2>
             <p>Why are some applications<br>
@@ -79,7 +82,30 @@
                   <li class="fragment">No real improvements are made while costs increase.</li>
                 </ol>
             </ol>
+            <aside class="notes">
+              <ul>
+                <li>Examples:
+                  <ul>
+                    <li>adding an index instead of changing the query</li>
+                    <li>partitioning instead of normalizing</li>
+                    <li>adding columns instead of having the app use a key/value table</li>
+                  </ul>
+                </li>
+              </ul>
+            </aside>
           </section>
+
+          <section>
+            <h3>Examples</h3>
+              <ul>
+                <li>adding an index instead of changing the query</li>
+                <li>partitioning instead of normalizing</li>
+                <li>adding columns instead of having the app use a key/value table</li>
+              </ul>
+          </section>
+
+        </section>
+        <section>
 
           <section>
             <h2>The Hypothesis</h2>
@@ -87,6 +113,9 @@
             that can be understood by both developers and DB admins<br>
             will reduce costs and increase scalability.</p>
           </section>
+
+        </section>
+        <section>
 
           <section>
             <h3>The Experiment</h3>
@@ -138,21 +167,17 @@
           </section>
 
           <section>
-            <h3>Examples</h3>
-            <div style="text-align:left">
-              <dt>Solitary and Unique</dt>
-                <dd>IRC username</dd>
-              <dt>Solitary and Non-Unique</dt>
-                <dd>IRC message</dd>
-              <dt>Sociable and Unique</dt>
-                <dd>IRC room name</dd>
-              <dt>Sociable and Non-Unique</dt>
-                <dd>IRC room topic</dd>
-            </div>
+            <img src="img/model-for-scalable-data-examples.png" width="100%" height="80%" style="margin-top:-5%"/>
           </section>
 
           <section>
-              <img src="img/solitary-social_vs_unique-non-unique.png" width="100%" style="background-color:#fff">
+            <img src="img/model-for-scalable-data-solutions.png" width="100%" height="80%" style="margin-top:-5%"/>
+          </section>
+
+          <section>
+            <h1>Thank you!</h1>
+            Slides available at<br>
+            <a href="https://github.com/josephdpurcell/multi-master-mysql">github.com/josephdpurcell/multi-master-mysql</a>
           </section>
 
         </section>
